@@ -1,0 +1,7 @@
+post_upgrade() {
+    /usr/bin/systemctl restart cups.service
+}
+
+post_remove() {
+    /usr/bin/systemctl restart cups.service
+}

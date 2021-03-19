@@ -1,0 +1,35 @@
+# Maintainer: Łukasz Buśko <busko.lukasz@pm.me>
+
+pkgname=canon-ufr2-lt
+pkgver=5.30
+pkgrel=1
+arch=('any')
+depends=('cups')
+
+pkgdesc="Canon URFII drivers for cups"
+licens=('Unknown')
+
+source=(
+    'linux-UFRII-drv-v530-uken-12.tar.gz'
+)
+sha256sums=(
+    'a13dd88c183facb5d42d4ab65d8e2f9ec6548ac502485bb066bcb83088b7c9ae'
+)
+
+install=urf2.install
+
+package() {
+    version=${pkgver/\./}
+
+    ppd_dir=$srcdir/ppd
+
+    mkdir -p $ppd_dir
+    install -dm 755 $pkgdir/usr/share/ppd/canon
+
+    for file in $(find $srcdir/linux-UFRII-drv-v${version}-uken/Sources -name "*.tar.gz" -type f)
+    do
+        tar -xf $file -C $ppd_dir --wildcards "*\.ppd" --no-anchored --strip-components 2
+    done
+
+    find $ppd_dir -type f -exec install -Dm 644 {} $pkgdir/usr/share/ppd/canon \;
+}
