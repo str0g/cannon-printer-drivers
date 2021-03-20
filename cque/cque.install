@@ -1,0 +1,12 @@
+post_install() {
+    ln -sv /usr/share/ppd/canon /usr/share/ppd/cel
+    cd /opt/cel/bin
+    ./setup
+    cd -
+}
+
+pre_remove() {
+    rm /usr/share/ppd/cel
+    rm /usr/share/ppd/canon/canon
+    rm /opt/cel/cqueInfo4.0
+}

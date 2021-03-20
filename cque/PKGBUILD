@@ -1,0 +1,46 @@
+# Maintainer: Łukasz Buśko <busko.lukasz@pm.me>
+
+pkgname=canon-cque
+pkgver=4.0
+pkgrel=7
+arch=('x86_64')
+depends=(
+        'cups'
+        'libgcrypt'
+        )
+
+pkgdesc="Canon cque driver for more consistent printing"
+licens=('Unknown')
+
+source=(
+    'CQue_v4.0.7_Linux_64_EN.tar.gz'
+)
+sha256sums=(
+    '01864822774a920d31a7e7134ec5a9382f4cb542031fe1c6c94d53e22af9b090'
+)
+
+install=cque.install
+
+package() {
+    install -dm 755 $pkgdir/usr/share/ppd/canon
+    install -dm 755 $pkgdir/opt/cel
+    install -dm 755 $pkgdir/opt/cel/bin
+    install -dm 755 $pkgdir/opt/cel/etc
+    install -dm 755 $pkgdir/usr/share/doc/CQue${pkgver}
+
+
+    cque_dir=$srcdir/cque-en-${pkgver}-${pkgrel}
+    find $cque_dir/ppd -type f -execdir gzip -d {} \;
+    find $cque_dir/ppd -name "*\.ppd" -type f -exec install -Dm 644 {} $pkgdir/usr/share/ppd/canon \;
+
+    for file in $(ls "${cque_dir}/doc")
+    do
+        install -Dm 644 "$cque_dir/doc/$file" $pkgdir/usr/share/doc/CQue${pkgver}/
+    done
+
+    install -Dm 755 $srcdir/cque-en-$pkgver-$pkgrel/setup $pkgdir/opt/cel/bin
+    install -Dm 755 $srcdir/cque-en-$pkgver-$pkgrel/sicnc $pkgdir/opt/cel/bin
+    install -Dm 755 $srcdir/cque-en-$pkgver-$pkgrel/sicgsfilter $pkgdir/opt/cel/bin
+    #install -Dm 755 $srcdir/cque-en-$pkgver-$pkgrel/cqueInfo4.0 $pkgdir/opt/cel
+    install -Dm 644 $srcdir/cque-en-$pkgver-$pkgrel/cque4.0.png $pkgdir/opt/cel/etc
+}
